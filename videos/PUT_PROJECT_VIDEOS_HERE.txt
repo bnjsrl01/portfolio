@@ -1,0 +1,7 @@
+The first video player is configured for: 8strong.mp4
+Place 8strong.mp4 in this folder beside this text file.
+
+Additional players use:
+project-2.mp4
+project-3.mp4
+project-4.mp4
