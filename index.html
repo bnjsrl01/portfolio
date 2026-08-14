@@ -86,27 +86,124 @@
     .skills { display: flex; flex-wrap: wrap; gap: 12px; }
     .skill { padding: 10px 14px; border: 1px solid var(--line); background: var(--panel); border-radius: 999px; color: var(--muted); }
     .about { max-width: 800px; color: var(--muted); font-size: 1.08rem; }
-    .media-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
-    .media-card { background: rgba(17,24,45,.75); border: 1px solid var(--line); border-radius: 18px; padding: 18px; overflow: hidden; }
-    .media-card video, .media-card iframe { width: 100%; aspect-ratio: 16/9; display: block; border-radius: 12px; background: #050814; border: 0; }
-    .media-card h3 { margin: 17px 0 5px; }
-    .media-card p { color: var(--muted); font-size: .95rem; }
-    .video-picker {
-      display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
-      padding: 9px 13px; border-radius: 9px; background: var(--panel2);
-      border: 1px solid var(--line); cursor: pointer; font-weight: 700;
-      color: var(--text); font-size: .9rem;
+    .carousel-card {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(17,24,45,.75);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 25px 60px rgba(0,0,0,.35);
     }
-    .video-picker:hover { border-color: rgba(103,232,249,.55); }
-    .video-picker input { width: 190px; color: var(--muted); font-weight: 400; }
-    .selected-file { margin-top: 8px; color: var(--muted); font-size: .78rem; overflow-wrap: anywhere; }
-    .media-note { color: var(--muted); margin-top: 18px; font-size: .9rem; }
+    .carousel-stage {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #050814;
+      aspect-ratio: 16/9;
+    }
+    .carousel-stage video, .carousel-stage iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      border: 0;
+      border-radius: 16px;
+      background: #050814;
+    }
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(11,16,32,.75);
+      border: 1px solid rgba(255,255,255,.15);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all .2s ease;
+      z-index: 6;
+    }
+    .carousel-btn:hover {
+      background: var(--accent);
+      color: #0b1020;
+      border-color: var(--accent);
+      transform: translateY(-50%) scale(1.1);
+    }
+    .carousel-btn.prev { left: 16px; }
+    .carousel-btn.next { right: 16px; }
+    .carousel-info {
+      margin-top: 24px;
+    }
+    .carousel-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .carousel-num {
+      color: var(--accent);
+      font-weight: 800;
+    }
+    .carousel-title {
+      color: var(--text);
+    }
+    .carousel-desc {
+      color: var(--muted);
+      font-size: .98rem;
+      margin-top: 6px;
+    }
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 22px;
+    }
+    .carousel-dots .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.22);
+      border: 0;
+      cursor: pointer;
+      padding: 0;
+      transition: all .25s ease;
+    }
+    .carousel-dots .dot.active {
+      width: 26px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+    .carousel-dots .dot:hover:not(.active) {
+      background: rgba(255,255,255,.5);
+    }
+    .media-note {
+      color: var(--muted);
+      margin-top: 24px;
+      font-size: .92rem;
+      text-align: center;
+    }
+    .media-note strong {
+      color: var(--text);
+    }
     footer { padding: 35px 0; border-top: 1px solid var(--line); color: var(--muted); text-align: center; }
     @media (max-width: 800px) {
-      .hero-grid, .cards, .media-grid { grid-template-columns: 1fr; }
+      .hero-grid, .cards { grid-template-columns: 1fr; }
       .nav-links { display: none; }
       .hero { padding: 65px 0; }
       section { padding: 70px 0; }
+      .carousel-card { padding: 16px; border-radius: 18px; }
+      .carousel-btn { width: 36px; height: 36px; }
+      .carousel-btn.prev { left: 10px; }
+      .carousel-btn.next { right: 10px; }
     }
   </style>
 </head>
@@ -206,65 +303,33 @@
         <div class="section-head">
           <div class="eyebrow">Portfolio</div>
           <h2>Projects & Videos</h2>
-          <p>Featured projects, systems, and technical walkthroughs.</p>
+          <p>Explore project demonstrations with the interactive video carousel.</p>
         </div>
 
-        <div class="media-grid">
-          <article class="media-card">
-            <iframe 
-              src="https://www.youtube-nocookie.com/embed/K8pIrFcGcZ8" 
-              title="ERP & POS System" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              referrerpolicy="strict-origin-when-cross-origin" 
-              allowfullscreen>
-            </iframe>
-            <h3>Project Video 01</h3>
-            <p>ERP & POS System demonstration and system walkthrough video.</p>
-            <a href="https://youtu.be/K8pIrFcGcZ8" target="_blank" rel="noopener noreferrer" style="display:inline-block; margin-top:10px; font-size:.85rem; color:var(--accent); font-weight:600;">↗ Watch on YouTube</a>
-          </article>
+        <div class="carousel-card">
+          <div class="carousel-stage">
+            <div id="carouselMedia" style="width:100%; height:100%;"></div>
+            <button id="prevBtn" class="carousel-btn prev" aria-label="Previous Video">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button id="nextBtn" class="carousel-btn next" aria-label="Next Video">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
 
-          <article class="media-card">
-            <video id="projectVideo2" controls preload="metadata">
-              Your browser does not support HTML5 video.
-            </video>
-            <h3>Project Video 02</h3>
-            <p>Select another project or system demonstration.</p>
-            <label class="video-picker">
-              <span>Choose Video</span>
-              <input type="file" accept="video/*" onchange="loadVideo(this, 'projectVideo2', 'projectTitle2')">
-            </label>
-            <div id="projectTitle2" class="selected-file">No video selected</div>
-          </article>
+          <div class="carousel-info">
+            <div class="carousel-title-row">
+              <span id="carouselNum" class="carousel-num">01</span>
+              <span id="carouselTitle" class="carousel-title">8Strong Project</span>
+            </div>
+            <p id="carouselDesc" class="carousel-desc">Project demonstration and system walkthrough.</p>
+          </div>
 
-          <article class="media-card">
-            <video id="projectVideo3" controls preload="metadata">
-              Your browser does not support HTML5 video.
-            </video>
-            <h3>Project Video 03</h3>
-            <p>Add another IT project, application, or system walkthrough.</p>
-            <label class="video-picker">
-              <span>Choose Video</span>
-              <input type="file" accept="video/*" onchange="loadVideo(this, 'projectVideo3', 'projectTitle3')">
-            </label>
-            <div id="projectTitle3" class="selected-file">No video selected</div>
-          </article>
-
-          <article class="media-card">
-            <video id="projectVideo4" controls preload="metadata">
-              Your browser does not support HTML5 video.
-            </video>
-            <h3>Project Video 04</h3>
-            <p>Add another project presentation or technical demonstration.</p>
-            <label class="video-picker">
-              <span>Choose Video</span>
-              <input type="file" accept="video/*" onchange="loadVideo(this, 'projectVideo4', 'projectTitle4')">
-            </label>
-            <div id="projectTitle4" class="selected-file">No video selected</div>
-          </article>
+          <div id="carouselDots" class="carousel-dots"></div>
         </div>
 
         <p class="media-note">
-          Project Video 01 is streamed directly from YouTube. You can also select local demo files for the other players above.
+          Project 01 is configured for <strong>YouTube (K8pIrFcGcZ8)</strong>. Place additional demo videos in the <strong>videos</strong> folder.
         </p>
       </div>
     </section>
@@ -356,29 +421,88 @@
   </footer>
 
   <script>
-    function loadVideo(input, videoId, titleId) {
-      const file = input.files && input.files[0];
-      if (!file) return;
-
-      const video = document.getElementById(videoId);
-      const title = document.getElementById(titleId);
-
-      if (!file.type.startsWith("video/")) {
-        title.textContent = "Please select a video file.";
-        return;
+    const carouselProjects = [
+      {
+        num: "01",
+        title: "8Strong Project",
+        desc: "Project demonstration and system walkthrough.",
+        type: "youtube",
+        youtubeId: "K8pIrFcGcZ8"
+      },
+      {
+        num: "02",
+        title: "Technical Support & Diagnostics",
+        desc: "Hardware/software troubleshooting, maintenance, and computer repairs.",
+        type: "video",
+        src: "videos/project-2.mp4"
+      },
+      {
+        num: "03",
+        title: "Inventory Management — SAP Business One",
+        desc: "SAP Business One inventory tracking, documentation, and operations.",
+        type: "video",
+        src: "videos/project-3.mp4"
+      },
+      {
+        num: "04",
+        title: "IT Operations & System Administration",
+        desc: "User access rights, security management, and IT infrastructure support.",
+        type: "video",
+        src: "videos/project-4.mp4"
       }
+    ];
 
-      if (video.dataset.objectUrl) {
-        URL.revokeObjectURL(video.dataset.objectUrl);
-      }
+    let currentIndex = 0;
+    const mediaEl = document.getElementById("carouselMedia");
+    const numEl = document.getElementById("carouselNum");
+    const titleEl = document.getElementById("carouselTitle");
+    const descEl = document.getElementById("carouselDesc");
+    const dotsContainer = document.getElementById("carouselDots");
 
-      const url = URL.createObjectURL(file);
-      video.dataset.objectUrl = url;
-      video.src = url;
-      video.load();
-      title.textContent = "Selected: " + file.name;
+    function renderDots() {
+      dotsContainer.innerHTML = "";
+      carouselProjects.forEach((_, i) => {
+        const dot = document.createElement("button");
+        dot.className = `dot ${i === currentIndex ? "active" : ""}`;
+        dot.setAttribute("aria-label", `Go to project ${i + 1}`);
+        dot.addEventListener("click", () => setProject(i));
+        dotsContainer.appendChild(dot);
+      });
     }
 
+    function setProject(index) {
+      if (index < 0) index = carouselProjects.length - 1;
+      if (index >= carouselProjects.length) index = 0;
+      currentIndex = index;
+
+      const p = carouselProjects[currentIndex];
+      
+      if (p.type === "youtube") {
+        mediaEl.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${p.youtubeId}" title="${p.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+      } else {
+        mediaEl.innerHTML = `<video controls preload="metadata" src="${p.src}">Your browser does not support HTML5 video.</video>`;
+      }
+
+      numEl.textContent = p.num;
+      titleEl.textContent = p.title;
+      descEl.textContent = p.desc;
+
+      const dots = dotsContainer.querySelectorAll(".dot");
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("active", i === currentIndex);
+      });
+    }
+
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      setProject(currentIndex - 1);
+    });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      setProject(currentIndex + 1);
+    });
+
+    renderDots();
+    setProject(0);
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
